@@ -38,8 +38,8 @@ const Register = () => {
 
     try {
       const response = await axiosBaseUrl.post('/api/auth/register', data);
-      console.log(response.data);
-      dispatch(loadUser(response.data.user));
+      const user = await axiosBaseUrl.post('/api/auth/login', {email:response.data.user.email, password:data.password});
+      dispatch(loadUser(user.data.user));
       navigate('/');
     } catch (error) {
       console.error('Error registering user:', error);

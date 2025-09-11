@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 
 export const Sidebar = ({ 
   currentTheme, 
@@ -10,6 +11,8 @@ export const Sidebar = ({
   handleDeleteChat, 
   setIsProfileOpen 
 }) => {
+
+  const user = useSelector((state)=>state.user.user);
   return (
     <>
       {/* Mobile Backdrop */}
@@ -117,11 +120,11 @@ export const Sidebar = ({
               }}
             >
               <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-medium mr-3">
-                JD
+                {(user.fullName.firstName).charAt(0)}{(user.fullName.lastName).charAt(0)}
               </div>
               <div className="flex-grow">
-                <div className="font-medium">John Doe</div>
-                <div className="text-sm opacity-50">john@example.com</div>
+                <div className="font-medium">{user.fullName.firstName} {user.fullName.lastName}</div>
+                <div className="text-sm opacity-50">{user.email}</div>
               </div>
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />

@@ -1,21 +1,29 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { theme } from '../theme';
+import axiosBaseUrl from '../api/AxiosConfig'
+import { useDispatch } from 'react-redux';
+import { loadUser } from '../store/UserSlice';
 
 const Login = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
   const currentTheme = isDarkMode ? theme.dark : theme.light;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     const data = {
       email : email,
       password : password
     }
-    console.log('Form submitted', data);
+    const response = await axiosBaseUrl.post('/api/auth/login', data);
+    dispatch(loadUser(response.data.user));
+    navigate('/');
   };
+  
 
   return (
     <div 

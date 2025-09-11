@@ -1,12 +1,13 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 
 export const ProfileModal = ({
   isOpen,
   onClose,
   currentTheme
 }) => {
+  const user = useSelector((state)=>state.user.user);
   if (!isOpen) return null;
-
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm"
@@ -39,7 +40,7 @@ export const ProfileModal = ({
           {/* Profile Picture */}
           <div className="flex flex-col items-center space-y-4">
             <div className="w-24 h-24 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white text-3xl font-medium">
-              JD
+              {(user.fullName.firstName).charAt(0).toUpperCase()}{(user.fullName.lastName).charAt(0).toUpperCase()}
             </div>
             <button
               className="text-sm font-medium hover:underline"
@@ -65,7 +66,7 @@ export const ProfileModal = ({
                 color: currentTheme.text,
                 border: `1px solid ${currentTheme.border}`
               }}
-              defaultValue="John Doe"
+              defaultValue={`${user.fullName.firstName} ${user.fullName.lastName}`}
             />
           </div>
           <div>
@@ -83,7 +84,7 @@ export const ProfileModal = ({
                 color: currentTheme.text,
                 border: `1px solid ${currentTheme.border}`
               }}
-              defaultValue="john@example.com"
+              defaultValue={`${user.email}`}
             />
           </div>
 
@@ -96,16 +97,16 @@ export const ProfileModal = ({
                 color: currentTheme.text
               }}
             >
-              Cancel
+              logout
             </button>
             <button
               className="px-6 py-3 rounded-xl font-medium transition-all duration-200 hover:shadow-lg"
               style={{
-                background: currentTheme.primary,
+                background: currentTheme.warning,
                 color: '#ffffff'
               }}
             >
-              Save Changes
+              Delete Account
             </button>
           </div>
         </div>
