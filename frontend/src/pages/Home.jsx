@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { theme } from '../theme';
 import { Sidebar } from '../components/chat/Sidebar';
 import { Header } from '../components/chat/Header';
@@ -7,18 +8,29 @@ import { MessageInput } from '../components/chat/MessageInput';
 import { SystemPromptModal } from '../components/chat/SystemPromptModal';
 import { ProfileModal } from '../components/chat/ProfileModal';
 import { formatMessage } from '../utils/messageFormatter';
+import {
+  selectMessages,
+  selectChats,
+  selectIsTyping,
+  selectSystemPrompt,
+  addMessage,
+  setIsTyping,
+  setSystemPrompt,
+  addChat,
+  deleteChat,
+  clearMessages,
+  setActiveChatId
+} from '../store/chatSlice';
 
 export const Home = () => {
-  const [messages, setMessages] = useState([]);
+  const dispatch = useDispatch();
+  const messages = useSelector(selectMessages);
+  const chats = useSelector(selectChats);
+  const isTyping = useSelector(selectIsTyping);
+  const systemPrompt = useSelector(selectSystemPrompt);
+  
   const [inputMessage, setInputMessage] = useState('');
-  const [isTyping, setIsTyping] = useState(false);
-  const [systemPrompt, setSystemPrompt] = useState('You are a helpful AI assistant.');
   const [isSystemPromptOpen, setIsSystemPromptOpen] = useState(false);
-  const [chats, setChats] = useState([
-    { id: 1, title: 'React Development Help', timestamp: 'Just now', active: true },
-    { id: 2, title: 'AI Assistance', timestamp: '2 hours ago', active: false },
-    { id: 3, title: 'Project Planning', timestamp: '1 day ago', active: false },
-  ]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const messagesEndRef = useRef(null);
@@ -51,9 +63,9 @@ export const Home = () => {
   const currentTheme = isDarkMode ? theme.dark : theme.light;
 
   const simulateTyping = async (text) => {
-    setIsTyping(true);
+    dispatch(setIsTyping(true));
     await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 2000));
-    setIsTyping(false);
+    dispatch(setIsTyping(false));
     return text;
   };
 
@@ -83,7 +95,7 @@ export const Home = () => {
         sender: 'user',
       };
 
-      setMessages(prev => [...prev, newUserMessage]);
+      dispatch(addMessage(newUserMessage));
       setInputMessage('');
 
       // Generate and add AI response
@@ -94,7 +106,7 @@ export const Home = () => {
         sender: 'ai',
       };
 
-      setMessages(prev => [...prev, newAiMessage]);
+      dispatch(addMessage(newAiMessage));
 
       // Update chat list with new chat if it's the first message
       if (messages.length === 0) {
@@ -104,23 +116,18 @@ export const Home = () => {
           active: true,
           timestamp: 'Just now'
         };
-        setChats(prev => [newChat, ...prev.map(chat => ({ ...chat, active: false }))]);
+        dispatch(addChat(newChat));
       }
     }
   };
 
   const handleNewChat = () => {
-    setMessages([]);
+    dispatch(clearMessages());
   };
 
   const handleDeleteChat = (chatId, e) => {
     e.stopPropagation(); // Prevent chat selection when clicking delete
-    setChats(prev => prev.filter(chat => chat.id !== chatId));
-
-    // If we're deleting the active chat, clear messages
-    if (chats.find(chat => chat.id === chatId)?.active) {
-      setMessages([]);
-    }
+    dispatch(deleteChat(chatId));
   };
 
   return (
@@ -131,8 +138,8 @@ export const Home = () => {
         setIsSidebarOpen={setIsSidebarOpen}
         handleNewChat={handleNewChat}
         chats={chats}
-        setChats={setChats}
         handleDeleteChat={handleDeleteChat}
+        setActiveChatId={(id) => dispatch(setActiveChatId(id))}
         setIsProfileOpen={setIsProfileOpen}
       />
 
@@ -166,7 +173,7 @@ export const Home = () => {
         onClose={() => setIsSystemPromptOpen(false)}
         currentTheme={currentTheme}
         systemPrompt={systemPrompt}
-        setSystemPrompt={setSystemPrompt}
+        setSystemPrompt={(prompt) => dispatch(setSystemPrompt(prompt))}
       />
 
       <ProfileModal

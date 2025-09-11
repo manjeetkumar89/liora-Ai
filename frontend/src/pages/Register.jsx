@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { theme } from '../theme';
+import axiosBaseUrl from '../api/AxiosConfig';
+import { useDispatch } from 'react-redux';
+import { loadUser } from '../store/UserSlice';
 
 const Register = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -20,7 +25,7 @@ const Register = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     const data = {
       fullName : {
@@ -30,7 +35,16 @@ const Register = () => {
       email : formData.email,
       password : formData.password
     }
-    console.log(data);
+
+    try {
+      const response = await axiosBaseUrl.post('/api/auth/register', data);
+      console.log(response.data);
+      dispatch(loadUser(response.data.user));
+      navigate('/');
+    } catch (error) {
+      console.error('Error registering user:', error);
+    }
+
   };
 
   return (
