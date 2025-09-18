@@ -4,9 +4,11 @@ import { useSelector } from 'react-redux';
 export const ProfileModal = ({
   isOpen,
   onClose,
-  currentTheme
+  currentTheme,
+  logoutHandler
 }) => {
   const user = useSelector((state)=>state.user.user);
+
   if (!isOpen) return null;
   return (
     <div
@@ -90,7 +92,7 @@ export const ProfileModal = ({
 
           <div className="flex justify-end space-x-4 mt-8">
             <button
-              onClick={onClose}
+              onClick={logoutHandler}
               className="px-6 py-3 rounded-xl font-medium transition-all duration-200 hover:opacity-80"
               style={{
                 background: currentTheme.inputBg,

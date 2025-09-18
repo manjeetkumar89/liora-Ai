@@ -7,7 +7,9 @@ import { MessageList } from '../components/chat/MessageList';
 import { MessageInput } from '../components/chat/MessageInput';
 import { SystemPromptModal } from '../components/chat/SystemPromptModal';
 import { ProfileModal } from '../components/chat/ProfileModal';
-import { formatMessage } from '../utils/messageFormatter';
+import { formatMessage } from '../utils/FormatMessage';
+import {toast} from 'react-toastify';
+import axiosBaseUrl from '../api/AxiosConfig';
 import {
   selectMessages,
   selectChats,
@@ -19,8 +21,12 @@ import {
   addChat,
   deleteChat,
   clearMessages,
-  setActiveChatId
+  setActiveChatId,
+  setChats,
+  setMessages
 } from '../store/chatSlice';
+import { logoutUser } from '../store/UserSlice';
+//import { title } from 'process';
 
 export const Home = () => {
   const dispatch = useDispatch();
@@ -42,6 +48,15 @@ export const Home = () => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  useEffect(() => {
+    const fetchChats = async()=>{
+      const response = await axiosBaseUrl.get('/api/chat', {withCredentials:true});
+      dispatch(setChats(response.data.chats));
+    }
+    fetchChats();
+  }, [dispatch])
+  
 
   // Close sidebar on mobile when window size changes
   useEffect(() => {
@@ -90,9 +105,9 @@ export const Home = () => {
     e.preventDefault();
     if (inputMessage.trim()) {
       const newUserMessage = {
-        id: messages.length + 1,
-        text: inputMessage,
-        sender: 'user',
+        _id: messages.length + 1,
+        content: inputMessage,
+        role: 'user',
       };
 
       dispatch(addMessage(newUserMessage));
@@ -101,34 +116,65 @@ export const Home = () => {
       // Generate and add AI response
       const aiResponse = await generateAIResponse(inputMessage);
       const newAiMessage = {
-        id: messages.length + 2,
-        text: await simulateTyping(aiResponse),
-        sender: 'ai',
+        _id: messages.length + 2,
+        content: await simulateTyping(aiResponse),
+        role: 'model',
       };
 
       dispatch(addMessage(newAiMessage));
 
+      const checkIsActiveChat = chats.find(chat => chat.active);
+
       // Update chat list with new chat if it's the first message
-      if (messages.length === 0) {
-        const newChat = {
-          id: chats.length + 1,
-          title: inputMessage.slice(0, 30) + (inputMessage.length > 30 ? '...' : ''),
-          active: true,
-          timestamp: 'Just now'
-        };
-        dispatch(addChat(newChat));
+      if (messages.length === 0 && !checkIsActiveChat) {
+        const newChat = await axiosBaseUrl.post('api/chat/', {title: inputMessage.slice(0, 30) + (inputMessage.length > 30 ? '...' : '')},{withCredentials:true});
+        dispatch(addChat({...newChat.data.chat,active:true}));
       }
     }
   };
 
-  const handleNewChat = () => {
+  const handleNewChat = async() => {
+    const title = prompt("enter chat title");
+    const setActiveChatsInactive = chats.map(chat => ({...chat, active:false}));
+    if(!title){
+      dispatch(clearMessages());
+      dispatch(setChats([...setActiveChatsInactive]));
+      return;
+    };
+    const newChat = await axiosBaseUrl.post('/api/chat/', {title:title},{withCredentials:true});
+    dispatch(addChat({...newChat.data.chat,active:true}))
     dispatch(clearMessages());
   };
 
-  const handleDeleteChat = (chatId, e) => {
+  const handleDeleteChat = async(chatId, e) => {
     e.stopPropagation(); // Prevent chat selection when clicking delete
+    const response = await axiosBaseUrl.delete(`/api/chat/${chatId}`, {withCredentials:true});
+    toast.success(response.data.message);
+    console.log(response.data.message);
     dispatch(deleteChat(chatId));
   };
+
+  const logoutHandler = async() =>{
+    try {
+      const response = await axiosBaseUrl.post('/api/auth/logout', {}, { withCredentials: true });
+      toast.success(response.data.message);
+      console.log(response.data.message);
+      dispatch(logoutUser());
+      dispatch(clearMessages());
+    } catch (error) {
+      console.error("logout failed",error);
+    }
+  };
+
+  const fetchChatMessages = async(chatId)=>{
+    try {
+      const response = await axiosBaseUrl.get(`/api/chat/${chatId}`, {withCredentials:true});
+      console.log(response.data)
+      dispatch(setMessages(response.data.messages));
+    } catch (error) {
+      console.error("Error fetching chat messages:", error);
+    }
+  }
 
   return (
     <div className="flex h-screen overflow-hidden" style={{ background: currentTheme.background }}>
@@ -141,6 +187,8 @@ export const Home = () => {
         handleDeleteChat={handleDeleteChat}
         setActiveChatId={(id) => dispatch(setActiveChatId(id))}
         setIsProfileOpen={setIsProfileOpen}
+        clearMessages={clearMessages}
+        fetchChatMessages={fetchChatMessages}
       />
 
       <div className="flex-1 flex flex-col relative">
@@ -180,6 +228,7 @@ export const Home = () => {
         isOpen={isProfileOpen}
         onClose={() => setIsProfileOpen(false)}
         currentTheme={currentTheme}
+        logoutHandler={logoutHandler}
       />
 
       <style>

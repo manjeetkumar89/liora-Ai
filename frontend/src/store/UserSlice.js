@@ -11,9 +11,12 @@ export const userSlice = createSlice({
         loadUser : (state, action) =>{
             state.user = action.payload;
             console.log("user loaded" , state.user);
+        },
+        logoutUser : (state)=>{
+            state.user = null;
         }
     }
 })
 
-export const {loadUser} = userSlice.actions;
+export const {loadUser,logoutUser} = userSlice.actions;
 export default userSlice.reducer;

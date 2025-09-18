@@ -4,6 +4,7 @@ import { theme } from '../theme';
 import axiosBaseUrl from '../api/AxiosConfig'
 import { useDispatch } from 'react-redux';
 import { loadUser } from '../store/UserSlice';
+import { toast } from 'react-toastify';
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -13,41 +14,47 @@ const Login = () => {
   const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
   const currentTheme = isDarkMode ? theme.dark : theme.light;
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const data = {
-      email : email,
-      password : password
+    try {
+      const data = {
+        email: email,
+        password: password
+      }
+      const response = await axiosBaseUrl.post('/api/auth/login', data, { withCredentials: true });
+      toast.success(response.data.message);
+      dispatch(loadUser(response.data.user));
+      navigate('/');
+    } catch (error) {
+      console.error("Login error:", error);
+      toast.error(error.response?.data?.message || "Login failed, try again.")
     }
-    const response = await axiosBaseUrl.post('/api/auth/login', data);
-    dispatch(loadUser(response.data.user));
-    navigate('/');
   };
-  
+
 
   return (
-    <div 
+    <div
       className="min-h-screen flex items-center justify-center p-4"
       style={{ background: currentTheme.background }}
     >
-      <div 
+      <div
         className="w-full max-w-md p-8 rounded-lg shadow-lg"
-        style={{ 
+        style={{
           background: currentTheme.cardBg,
           border: `1px solid ${currentTheme.border}`
         }}
       >
-        <h2 
+        <h2
           className="text-3xl font-bold mb-6 text-center"
           style={{ color: currentTheme.text }}
         >
           Welcome Back
         </h2>
-        
+
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label 
-              htmlFor="email" 
+            <label
+              htmlFor="email"
               className="block mb-2 text-sm font-medium"
               style={{ color: currentTheme.text }}
             >
@@ -59,7 +66,7 @@ const Login = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-2 rounded-lg outline-none transition-colors"
-              style={{ 
+              style={{
                 background: currentTheme.inputBg,
                 color: currentTheme.text,
                 border: `1px solid ${currentTheme.border}`
@@ -70,8 +77,8 @@ const Login = () => {
           </div>
 
           <div>
-            <label 
-              htmlFor="password" 
+            <label
+              htmlFor="password"
               className="block mb-2 text-sm font-medium"
               style={{ color: currentTheme.text }}
             >
@@ -83,7 +90,7 @@ const Login = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-2 rounded-lg outline-none transition-colors"
-              style={{ 
+              style={{
                 background: currentTheme.inputBg,
                 color: currentTheme.text,
                 border: `1px solid ${currentTheme.border}`
@@ -96,7 +103,7 @@ const Login = () => {
           <button
             type="submit"
             className="w-full py-3 rounded-lg font-medium transition-colors"
-            style={{ 
+            style={{
               background: currentTheme.primary,
               color: '#ffffff'
             }}
@@ -105,13 +112,13 @@ const Login = () => {
           </button>
         </form>
 
-        <p 
+        <p
           className="mt-6 text-center text-sm"
           style={{ color: currentTheme.secondary }}
         >
           Don't have an account?{' '}
-          <Link 
-            to="/register" 
+          <Link
+            to="/register"
             className="font-medium transition-colors hover:underline"
             style={{ color: currentTheme.accent }}
           >

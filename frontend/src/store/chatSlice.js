@@ -3,13 +3,13 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   messages: [],
   chats: [
-    { id: 1, title: 'React Development Help', timestamp: 'Just now', active: true },
-    { id: 2, title: 'AI Assistance', timestamp: '2 hours ago', active: false },
-    { id: 3, title: 'Project Planning', timestamp: '1 day ago', active: false },
+    // { id: 1, title: 'React Development Help', timestamp: 'Just now', active: true },
+    // { id: 2, title: 'AI Assistance', timestamp: '2 hours ago', active: false },
+    // { id: 3, title: 'Project Planning', timestamp: '1 day ago', active: false },
   ],
   isTyping: false,
   systemPrompt: 'You are a helpful AI assistant.',
-  currentChatId: 1,
+  currentChatId: null,
   error: null,
   status: 'idle' // 'idle' | 'loading' | 'succeeded' | 'failed'
 };
@@ -20,6 +20,7 @@ export const chatSlice = createSlice({
   reducers: {
     setMessages: (state, action) => {
       state.messages = action.payload;
+      console.log("messages set to state : ", state.messages)
     },
     addMessage: (state, action) => {
       state.messages.push(action.payload);
@@ -32,15 +33,16 @@ export const chatSlice = createSlice({
     },
     setChats: (state, action) => {
       state.chats = action.payload;
+      console.log(state.chats);
     },
     addChat: (state, action) => {
       state.chats = [action.payload, ...state.chats.map(chat => ({ ...chat, active: false }))];
-      state.currentChatId = action.payload.id;
+      state.currentChatId = action.payload._id;
     },
     deleteChat: (state, action) => {
-      state.chats = state.chats.filter(chat => chat.id !== action.payload);
+      state.chats = state.chats.filter(chat => chat._id !== action.payload);
       if (state.currentChatId === action.payload) {
-        state.currentChatId = state.chats[0]?.id || null;
+        state.currentChatId = state.chats[0]?._id || null;
         state.messages = [];
       }
     },
@@ -48,7 +50,7 @@ export const chatSlice = createSlice({
       state.currentChatId = action.payload;
       state.chats = state.chats.map(chat => ({
         ...chat,
-        active: chat.id === action.payload
+        active: chat._id === action.payload
       }));
     },
     clearMessages: (state) => {

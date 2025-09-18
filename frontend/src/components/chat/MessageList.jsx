@@ -11,7 +11,7 @@ export const MessageList = ({
 }) => {
   return (
     <div
-      className="flex-grow overflow-y-auto"
+      className="flex-grow overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
       style={{ background: currentTheme.background }}
     >
       {messages.length === 0 ? (
@@ -20,7 +20,7 @@ export const MessageList = ({
         <div className="w-full max-w-4xl mx-auto py-6 px-4 md:px-8 space-y-6">
           {messages.map((message) => (
             <Message
-              key={message.id}
+              key={message._id}
               message={message}
               formatMessage={formatMessage}
               currentTheme={currentTheme}

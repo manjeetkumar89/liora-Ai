@@ -1,5 +1,6 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+
 
 export const Sidebar = ({ 
   currentTheme, 
@@ -7,12 +8,21 @@ export const Sidebar = ({
   setIsSidebarOpen, 
   handleNewChat, 
   chats, 
-  setChats, 
+  setActiveChatId, 
   handleDeleteChat, 
-  setIsProfileOpen 
+  setIsProfileOpen,
+  clearMessages,
+  fetchChatMessages
 }) => {
 
   const user = useSelector((state)=>state.user.user);
+  const dispatch = useDispatch();
+  const setActiveChat = (chatId) =>{
+    setActiveChatId(chatId);
+    dispatch(clearMessages());
+    fetchChatMessages(chatId);
+    setIsSidebarOpen(false);
+  }
   return (
     <>
       {/* Mobile Backdrop */}
@@ -67,19 +77,22 @@ export const Sidebar = ({
           <div className="flex-grow overflow-y-auto px-2 py-2 space-y-1">
             {chats.map(chat => (
               <div
-                key={chat.id}
+                key={chat._id}
                 className={`flex items-center p-3 rounded-md cursor-pointer transition-all duration-200 group ${
                   chat.active ? 'bg-[#343541]' : 'hover:bg-[#2A2B32]'
                 } relative`}
                 style={{
                   color: currentTheme.text
                 }}
-                onClick={() => {
-                  setChats(prev => prev.map(c => ({
-                    ...c,
-                    active: c.id === chat.id
-                  })));
-                }}
+                onClick={() => 
+                  setActiveChat(chat._id)
+                  // {
+                  // setChats(prev => prev.map(c => ({
+                  //   ...c,
+                  //   active: c._id === chat._id
+                  // })));
+                  // }
+              }
               >
                 <div className="mr-3">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -89,12 +102,12 @@ export const Sidebar = ({
                 <div className="flex-grow min-w-0">
                   <div className="font-medium truncate">{chat.title}</div>
                   <div className={`text-xs ${chat.active ? 'text-white/70' : 'opacity-50'}`}>
-                    {chat.timestamp}
+                    {chat.lastActivity}
                   </div>
                 </div>
                 <button
                   className="opacity-0 group-hover:opacity-100 hover:bg-white/10 p-1 rounded-lg transition-all duration-200 absolute right-2"
-                  onClick={(e) => handleDeleteChat(chat.id, e)}
+                  onClick={(e) => handleDeleteChat(chat._id, e)}
                   title="Delete chat"
                   style={{ color: currentTheme.text }}
                 >

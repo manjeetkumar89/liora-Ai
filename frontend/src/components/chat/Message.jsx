@@ -1,9 +1,11 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 
 export const Message = ({ message, formatMessage, currentTheme }) => {
+  const user = useSelector((state) => state.user.user);
   return (
-    <div className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'} animate-messageIn`}>
-      {message.sender === 'ai' && (
+    <div className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'} animate-messageIn`}>
+      {message.role === 'model' && (
         <div
           className="w-8 h-8 rounded-full flex items-center justify-center text-white font-medium mr-3 flex-shrink-0 shadow-lg animate-pop"
           style={{ background: currentTheme.gradients.purple }}
@@ -12,24 +14,25 @@ export const Message = ({ message, formatMessage, currentTheme }) => {
         </div>
       )}
       <div
-        className={`max-w-[85%] md:max-w-[75%] p-3 group rounded-2xl ${
-          message.sender === 'user' ? 'ml-12' : ''
-        } transition-all duration-300`}
+        className={`max-w-[85%] sm:max-w-[80%] p-4 group rounded-2xl transition-all duration-300`}
         style={{
           background: currentTheme.cardBg,
           color: currentTheme.text,
         }}
       >
-        <div
-          className="whitespace-pre-wrap prose prose-invert max-w-none"
-          dangerouslySetInnerHTML={formatMessage(message.text)}
-        />
+        {/* <div
+          className="whitespace-pre-wrap prose prose-invert max-w-full prose-pre:my-0 prose-pre:bg-transparent prose-p:my-2 prose-headings:mb-3 prose-headings:mt-6 first:prose-headings:mt-2"
+          dangerouslySetInnerHTML={formatMessage(message.content)}
+        /> */}
+        <div className="prose prose-invert max-w-none">
+          {formatMessage(message.content)}
+        </div>
         <div className="mt-2 flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-          {message.sender === 'ai' && (
+          {message.role === 'model' && (
             <>
               <button
                 onClick={() => {
-                  navigator.clipboard.writeText(message.text);
+                  navigator.clipboard.writeText(message.content);
                   alert('Message copied to clipboard!');
                 }}
                 className="p-1 rounded hover:bg-black/10 transition-colors"
@@ -40,7 +43,7 @@ export const Message = ({ message, formatMessage, currentTheme }) => {
                 </svg>
               </button>
               <button
-                onClick={() => {}}
+                onClick={() => { }}
                 className="p-1 rounded hover:bg-black/10 transition-colors"
                 title="Regenerate response"
               >
@@ -52,12 +55,12 @@ export const Message = ({ message, formatMessage, currentTheme }) => {
           )}
         </div>
       </div>
-      {message.sender === 'user' && (
+      {message.role === 'user' && (
         <div
           className="w-8 h-8 rounded-full flex items-center justify-center text-white font-medium ml-3 flex-shrink-0 shadow-lg animate-pop"
           style={{ background: currentTheme.gradients.blue }}
         >
-          JD
+          {user?.fullName.firstName.charAt(0).toUpperCase() || "U"}
         </div>
       )}
     </div>
