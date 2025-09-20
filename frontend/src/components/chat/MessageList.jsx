@@ -85,10 +85,10 @@ const TypingIndicator = ({ currentTheme }) => {
         AI
       </div>
       <div
-        className="max-w-[85%] md:max-w-[75%] p-4 rounded-2xl rounded-tl-sm backdrop-blur-sm"
+        className="max-w-[85%] md:max-w-[75%] p-4 " //rounded-2xl rounded-tl-sm backdrop-blur-sm
         style={{
-          background: 'rgba(24, 24, 27, 0.5)',
-          border: `1px solid ${currentTheme.border}`,
+          //background: 'rgba(24, 24, 27, 0.5)',
+          //border: `1px solid ${currentTheme.border}`,
         }}
       >
         <div className="flex space-x-2">

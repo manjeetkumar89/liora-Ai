@@ -10,7 +10,12 @@ const {createMemory, queryMemory} = require('../services/vector.service');
 
 
 function initSocketServer(httpServer){
-    const io = new Server(httpServer,{});
+    const io = new Server(httpServer,{
+        cors : {
+            origin : "http://localhost:5173", //frontend url
+            credentials : true
+        }
+    });
 
     //socket.io middleware to authenticate users
     io.use(async (socket, next)=>{
@@ -34,7 +39,7 @@ function initSocketServer(httpServer){
        console.log('New client connected: ' + socket.id);
 
        socket.on("ai-message", async(messagePayload)=>{
-        
+        socket.emit("ai-typing");
         /*
         //saving user messages to database 
         const message = await messageModel.create({
@@ -115,6 +120,8 @@ function initSocketServer(httpServer){
             }
         ]
 
+        socket.emit("ai-stop-typing");
+        
         const response = await aiService.generateResponse([...longTermMemory, ...shortTermMemory]);
 
         socket.emit("ai-response", {

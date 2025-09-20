@@ -26,7 +26,8 @@ import {
   setMessages
 } from '../store/chatSlice';
 import { logoutUser } from '../store/UserSlice';
-//import { title } from 'process';
+import {io} from 'socket.io-client';
+import { nanoid } from '@reduxjs/toolkit';
 
 export const Home = () => {
   const dispatch = useDispatch();
@@ -40,6 +41,8 @@ export const Home = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const messagesEndRef = useRef(null);
+
+  const [socket, setSocket] = useState(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -55,7 +58,42 @@ export const Home = () => {
       dispatch(setChats(response.data.chats));
     }
     fetchChats();
-  }, [dispatch])
+
+  }, [ dispatch])
+
+  useEffect(() => {
+    const temp = io(axiosBaseUrl.defaults.baseURL, {
+      withCredentials: true,
+    });
+
+    // Listen for typing events from the server
+    temp.on("ai-typing", () => {
+      dispatch(setIsTyping(true));
+    });
+
+    temp.on("ai-stop-typing", () => {
+      dispatch(setIsTyping(false));
+    });
+
+    temp.on("ai-response", (messagePayload) => {
+      console.log("received ai message", messagePayload);
+      const aiMessage = {
+        _id: nanoid(),
+        content: messagePayload.content,
+        role: "model"
+      };
+      dispatch(addMessage(aiMessage));
+      dispatch(setIsTyping(false)); // Stop typing when message received
+    });
+
+    setSocket(temp);
+
+    // Clean up on unmount
+    return () => {
+      temp.disconnect();
+    };
+  }, [dispatch]);
+  
   
 
   // Close sidebar on mobile when window size changes
@@ -74,61 +112,41 @@ export const Home = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  const currentTheme = isDarkMode ? theme.dark : theme.light;
+  // const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+   const currentTheme = theme.dark;
 
-  const simulateTyping = async (text) => {
-    dispatch(setIsTyping(true));
-    await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 2000));
-    dispatch(setIsTyping(false));
-    return text;
-  };
-
-  const generateAIResponse = async (userMessage) => {
-    const responses = {
-      'help me with react': 'React is a JavaScript library for building user interfaces. What specific aspect would you like to learn about? I can help with:\n\n1. Components and Props\n2. State Management\n3. Hooks\n4. Routing\n5. Performance Optimization',
-      'write a blog post': "I'll help you write a blog post. First, let's determine:\n\n1. The main topic\n2. Target audience\n3. Key points to cover\n4. Desired length\n\nWhat topic would you like to write about?",
-      'explain async/await': "Async/await is a way to handle asynchronous operations in JavaScript. Here's a simple explanation:\n\n```javascript\nasync function fetchData() {\n  try {\n    const response = await fetch('api/data');\n    const data = await response.json();\n    return data;\n  } catch (error) {\n    console.error('Error:', error);\n  }\n}\n```\n\nWould you like me to explain more about how it works?",
-      'create a color scheme': "I'll help you create a color scheme. Let's start with these modern combinations:\n\n1. 🎨 Primary: #19c37d\n2. 🌟 Accent: #4f46e5\n3. 🌑 Dark: #343541\n4. ⭐ Light: #ececf1\n\nWould you like to explore more color combinations or adjust these?"
-    };
-
-    const defaultResponse = "I understand you're asking about '" + userMessage + "'. Could you provide more details about what specific information or help you're looking for?";
-
-    const matchingResponse = Object.entries(responses).find(([key]) =>
-      userMessage.toLowerCase().includes(key.toLowerCase())
-    );
-
-    return matchingResponse ? matchingResponse[1] : defaultResponse;
-  };
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (inputMessage.trim()) {
       const newUserMessage = {
-        _id: messages.length + 1,
+        _id: nanoid(),
         content: inputMessage,
         role: 'user',
       };
 
+      let activeChat = chats.find(chat => chat.active);
+
+      // Update chat list with new chat if it's the first message
+      if (messages.length === 0 && !activeChat) {
+        const newChatRes = await axiosBaseUrl.post('api/chat/', {title: inputMessage.slice(0, 30) + (inputMessage.length > 30 ? '...' : '')},{withCredentials:true});
+        const newChat = {...newChatRes.data.chat, active: true};
+        dispatch(addChat(newChat));
+        dispatch(setActiveChatId(newChat._id));
+        activeChat = newChat;
+      }
+
       dispatch(addMessage(newUserMessage));
       setInputMessage('');
 
-      // Generate and add AI response
-      const aiResponse = await generateAIResponse(inputMessage);
-      const newAiMessage = {
-        _id: messages.length + 2,
-        content: await simulateTyping(aiResponse),
-        role: 'model',
-      };
+      // Use the updated activeChat (either existing or just created)
+      const chatIdToSend = activeChat ? activeChat._id : chats.find(chat => chat.active)?._id;
 
-      dispatch(addMessage(newAiMessage));
-
-      const checkIsActiveChat = chats.find(chat => chat.active);
-
-      // Update chat list with new chat if it's the first message
-      if (messages.length === 0 && !checkIsActiveChat) {
-        const newChat = await axiosBaseUrl.post('api/chat/', {title: inputMessage.slice(0, 30) + (inputMessage.length > 30 ? '...' : '')},{withCredentials:true});
-        dispatch(addChat({...newChat.data.chat,active:true}));
+      if (socket && chatIdToSend) {
+        socket.emit("ai-message", {
+          chatId: chatIdToSend,
+          content: inputMessage.trim(),
+        });
       }
     }
   };
@@ -260,6 +278,19 @@ export const Home = () => {
             to {
               opacity: 1;
             }
+          }
+          
+          @keyframes rotate{
+            0% { 
+              transform: rotate(0deg) 
+            }
+            100% { 
+              transform: rotate(360deg)
+            }
+          }
+
+          .animate-rotate {
+            animation: rotate 8s linear infinite;
           }
           .animate-messageIn {
             animation: messageIn 0.5s ease-out forwards;

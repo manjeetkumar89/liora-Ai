@@ -8,20 +8,20 @@ export const MessageInput = ({
 }) => {
   return (
     <div
-      className={`fixed bottom-0 left-0 right-0 md:static p-4 md:p-8 transition-all duration-500 ${inputMessage.length === 0 ? 'transform translate-y-0' : ''}`}
+      className={` bottom-0 right-0 static w-full p-4 md:px-10 md:py-4 transition-all duration-500`}
       style={{
-        background: 'linear-gradient(180deg, rgba(53,55,64,0), #353740 25%, #353740)',
-        borderTop: `1px solid ${currentTheme.border}`,
+        // background: "transparent",
+        //borderTop: `1px solid ${currentTheme.border}`,
       }}
     >
-      <div className="max-w-3xl mx-auto relative">
+      <div className="max-w-2xl mx-auto relative">
         <form onSubmit={handleSendMessage} className="flex space-x-4 items-end justify-center">
           <div className="flex-grow relative group">
             <textarea
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}
               rows={1}
-              className="w-full px-4 py-3 rounded-xl outline-none transition-all duration-300 resize-none pr-12 font-light"
+              className=" outline-none w-full px-4 py-3 rounded-xl transition-all duration-300 resize-none pr-12 font-light"
               style={{
                 background: currentTheme.inputBg,
                 color: currentTheme.text,

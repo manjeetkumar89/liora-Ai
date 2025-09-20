@@ -2,22 +2,22 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 
-export const Sidebar = ({ 
-  currentTheme, 
-  isSidebarOpen, 
-  setIsSidebarOpen, 
-  handleNewChat, 
-  chats, 
-  setActiveChatId, 
-  handleDeleteChat, 
+export const Sidebar = ({
+  currentTheme,
+  isSidebarOpen,
+  setIsSidebarOpen,
+  handleNewChat,
+  chats,
+  setActiveChatId,
+  handleDeleteChat,
   setIsProfileOpen,
   clearMessages,
   fetchChatMessages
 }) => {
 
-  const user = useSelector((state)=>state.user.user);
+  const user = useSelector((state) => state.user.user);
   const dispatch = useDispatch();
-  const setActiveChat = (chatId) =>{
+  const setActiveChat = (chatId) => {
     setActiveChatId(chatId);
     dispatch(clearMessages());
     fetchChatMessages(chatId);
@@ -34,9 +34,8 @@ export const Sidebar = ({
       )}
       {/* Sidebar */}
       <div
-        className={`fixed md:relative inset-y-0 left-0 z-30 w-[280px] transform ${
-          isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        } transition-all duration-300 ease-in-out md:translate-x-0 border-r shadow-xl`}
+        className={`fixed md:relative inset-y-0 left-0 z-30 w-[280px] transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+          } transition-all duration-300 ease-in-out md:translate-x-0 border-r shadow-xl`}
         style={{
           background: currentTheme.gradients.sidebar,
           borderColor: currentTheme.border
@@ -44,11 +43,11 @@ export const Sidebar = ({
       >
         <div className="flex flex-col h-full">
           <div className="p-3" style={{ background: 'rgba(0,0,0,0.1)' }}>
-            <div className="flex items-center justify-between mb-3 md:hidden">
+            <div className="flex items-center justify-between mb-3">
               <h2 className="text-lg font-semibold" style={{ color: currentTheme.text }}>Chats</h2>
               <button
                 onClick={() => setIsSidebarOpen(false)}
-                className="p-1 hover:bg-white/10 rounded-lg transition-colors"
+                className="p-1 hover:bg-white/10 rounded-lg transition-colors md:hidden"
                 style={{ color: currentTheme.text }}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -57,20 +56,31 @@ export const Sidebar = ({
               </button>
             </div>
             {/* New Chat Button */}
-            <button
-              onClick={handleNewChat}
-              className="flex items-center justify-center w-full px-3 py-3 rounded-md transition-all duration-200 border hover:opacity-90 group"
-              style={{
-                borderColor: currentTheme.border,
-                background: 'transparent',
-                color: currentTheme.text
-              }}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-              </svg>
-              New Chat
-            </button>
+
+            <div class="relative flex w-full cursor-pointer items-center overflow-hidden rounded-xl p-[1.5px]">
+              <div class=" animate-rotate absolute inset-0 h-full w-full rounded-full bg-[conic-gradient(#0ea5e9_50deg,#522AF4_120deg)]" ></div>
+              {/* <button class="relative z-10 block w-full rounded-xl bg-gray-800 px-6 py-3 text-white">
+                My Button
+              </button> */}
+              <button
+                onClick={handleNewChat}
+                className="relative z-10 flex items-center justify-center w-full px-3 py-2 rounded-2xl border"
+                style={{
+                  borderColor: currentTheme.border,
+                  backgroundColor: "#1C1D1F",
+                  color: currentTheme.text
+                }}
+              >
+                {/* <span className='absolute top-1/2 right-1/2 transform -translate-y-1/2 translate-x-1/3 hover:translate-x-3/4 w-32 h-16 bg-blue-800 rounded-full blur-2xl opacity-80 z-0'></span> */}
+
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+                New Chat
+              </button>
+            </div>
+
+
           </div>
 
           {/* Chat History */}
@@ -78,22 +88,20 @@ export const Sidebar = ({
             {chats.map(chat => (
               <div
                 key={chat._id}
-                className={`flex items-center p-3 rounded-md cursor-pointer transition-all duration-200 group ${
-                  chat.active ? 'bg-[#343541]' : 'hover:bg-[#2A2B32]'
-                } relative`}
+                className={`flex items-center overflow-hidden px-3 py-2 rounded-2xl cursor-pointer transition-all duration-200 group ${chat.active ? 'bg-gray-400/10 backdrop-blur-md border border-white/10 shadow-lg' : 'hover:bg-[#2A2B32]' /*bg-[#343541] bg-gradient-to-r from-[#343541] from-50% to-blue-600 to-150%*/
+                  } relative`}
                 style={{
                   color: currentTheme.text
                 }}
-                onClick={() => 
-                  setActiveChat(chat._id)
-                  // {
-                  // setChats(prev => prev.map(c => ({
-                  //   ...c,
-                  //   active: c._id === chat._id
-                  // })));
-                  // }
-              }
+                onClick={() => setActiveChat(chat._id)}
               >
+                {chat.active ?
+                  <>
+                    <span className='absolute top-1/2 right-0 transform -translate-y-1/2 translate-x-1/3 w-32 h-16 bg-blue-800 rounded-full blur-2xl opacity-80 z-0'></span>
+                    <span className="absolute rounded-2xl bg-blue-400 blur-[0.8px] right-0 w-1 h-1/2 opacity-80"></span>
+                  </> : null
+                }
+
                 <div className="mr-3">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
@@ -101,12 +109,12 @@ export const Sidebar = ({
                 </div>
                 <div className="flex-grow min-w-0">
                   <div className="font-medium truncate">{chat.title}</div>
-                  <div className={`text-xs ${chat.active ? 'text-white/70' : 'opacity-50'}`}>
+                  {/* <div className={`text-xs ${chat.active ? 'text-white/70' : 'opacity-50'}`}>
                     {chat.lastActivity}
-                  </div>
+                  </div> */}
                 </div>
                 <button
-                  className="opacity-0 group-hover:opacity-100 hover:bg-white/10 p-1 rounded-lg transition-all duration-200 absolute right-2"
+                  className=" md:opacity-0 group-hover:opacity-100 hover:bg-white/10 p-1 rounded-lg transition-all duration-200 absolute right-2"
                   onClick={(e) => handleDeleteChat(chat._id, e)}
                   title="Delete chat"
                   style={{ color: currentTheme.text }}
@@ -121,18 +129,16 @@ export const Sidebar = ({
 
           {/* Profile Section */}
           <div
-            className="p-4 border-t cursor-pointer hover:bg-opacity-80 transition-colors"
+            className="p-4 cursor-pointer hover:bg-opacity-80 transition-colors"
             style={{ borderColor: currentTheme.border }}
             onClick={() => setIsProfileOpen(true)}
           >
             <div
-              className="flex items-center p-3 rounded-xl hover:shadow-md transition-all duration-200"
-              style={{
-                background: currentTheme.inputBg,
-                color: currentTheme.text
-              }}
+              className=" overflow-hidden flex items-center px-3 py-2 rounded-3xl hover:shadow-md transition-all duration-200 bg-gray-400/10 backdrop-blur-md border border-white/10 shadow-xl"
+              style={{ color: currentTheme.text }}
             >
-              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-medium mr-3">
+              <span className='absolute top-1/2 right-0 transform -translate-y-1/2 translate-x-1/3 w-32 h-16 bg-blue-800 rounded-full blur-2xl opacity-80 z-0'></span>
+              <div className="w-10 h-10 rounded-full bg-radial-[at_50%_75%] from-blue-400 to-blue-800 flex items-center justify-center text-white font-medium mr-3 ">
                 {(user.fullName.firstName).charAt(0)}{(user.fullName.lastName).charAt(0)}
               </div>
               <div className="flex-grow">

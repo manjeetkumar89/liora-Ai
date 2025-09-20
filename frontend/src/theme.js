@@ -1,33 +1,8 @@
 export const theme = {
-  light: {
-    background: '#ffffff',
-    solidBackground: '#ffffff',
-    text: '#374151',
-    primary: '#19c37d',
-    primarySolid: '#19c37d',
-    primaryLight: 'rgba(25, 195, 125, 0.1)',
-    secondary: '#6b7280',
-    accent: '#19c37d',
-    cardBg: '#ffffff',
-    inputBg: '#ffffff',
-    border: '#e5e7eb',
-    success: '#10b981',
-    error: '#ef4444',
-    warning: '#f59e0b',
-    shadowLight: '0 2px 10px rgba(0, 0, 0, 0.05)',
-    shadowMedium: '0 4px 20px rgba(0, 0, 0, 0.1)',
-    shadowHover: '0 8px 30px rgba(0, 0, 0, 0.12)',
-    glass: 'rgba(255, 255, 255, 0.8)',
-    gradients: {
-      blue: 'linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%)',
-      purple: 'linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%)',
-      pink: 'linear-gradient(135deg, #f472b6 0%, #e879f9 100%)',
-      green: 'linear-gradient(135deg, #34d399 0%, #10b981 100%)',
-    }
-  },
+  
   dark: {
-    background: '#343541',
-    solidBackground: '#343541',
+    background: '#212121', //'#343541',
+    solidBackground: 'red' ,//'#343541',
     text: '#ececf1',
     primary: '#10a37f',
     primarySolid: '#10a37f',

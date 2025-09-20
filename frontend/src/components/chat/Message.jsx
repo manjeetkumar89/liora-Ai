@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 
 export const Message = ({ message, formatMessage, currentTheme }) => {
   const user = useSelector((state) => state.user.user);
@@ -14,7 +15,7 @@ export const Message = ({ message, formatMessage, currentTheme }) => {
         </div>
       )}
       <div
-        className={`max-w-[85%] sm:max-w-[80%] p-4 group rounded-2xl transition-all duration-300`}
+        className={`max-w-[85%] sm:max-w-[80%] py-1 px-5 group rounded-2xl transition-all duration-300  ${message.role==='user' ? 'rounded-tr-sm' : 'rounded-tl-sm' }`}
         style={{
           background: currentTheme.cardBg,
           color: currentTheme.text,
@@ -27,13 +28,13 @@ export const Message = ({ message, formatMessage, currentTheme }) => {
         <div className="prose prose-invert max-w-none">
           {formatMessage(message.content)}
         </div>
-        <div className="mt-2 flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="mt-2 flex items-center justify-end gap-2 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
           {message.role === 'model' && (
             <>
               <button
                 onClick={() => {
                   navigator.clipboard.writeText(message.content);
-                  alert('Message copied to clipboard!');
+                  toast.success('Message copied to clipboard!');
                 }}
                 className="p-1 rounded hover:bg-black/10 transition-colors"
                 title="Copy to clipboard"

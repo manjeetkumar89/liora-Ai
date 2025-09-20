@@ -2,6 +2,7 @@ const { default: mongoose } = require('mongoose');
 const chatModel = require('../models/chat.model');
 const messageModel = require('../models/message.model');
 const { create } = require('../models/user.model');
+const { deleteAllMemoriesOfChat } = require('../services/vector.service');
 
 async function createChatController(req,res) {
     const {title} = req.body;
@@ -25,9 +26,9 @@ async function createChatController(req,res) {
 
 async function getChats(req,res) {
     const user = req.user;
-    const chats = await chatModel.find({user : user._id});
+    const chats = await chatModel.find({user : user._id}).sort({lastActivity : -1});
     res.status(200).json({
-        message:"chats fethched successfully",
+        message:"chats fetched successfully",
         chats: chats.map(chat=>({
             _id : chat._id,
             title : chat.title,
@@ -41,7 +42,15 @@ async function deleteChatController(req, res) {
     const user = req.user;
     const {chatId} = req.params;
     // const session = await mongoose.startSession();
+    console.log(chatId)
     try {
+        const pineconeResponse = await deleteAllMemoriesOfChat(chatId);
+        console.log("Pinecone deletion response: ", pineconeResponse);
+
+        await messageModel.deleteMany({
+            chatId
+        }/*,{session}*/);
+
         const deletedChat = await chatModel.findOneAndDelete({
             _id : chatId,
             user : user._id
@@ -53,9 +62,6 @@ async function deleteChatController(req, res) {
                 message : "chat not found"
             })
         }
-        await messageModel.deleteMany({
-            chat : chatId
-        }/*,{session}*/);
 
         // await session.commitTransaction();
         // session.endSession();

@@ -1,5 +1,6 @@
 const {Pinecone}= require('@pinecone-database/pinecone');
 
+
 const pc = new Pinecone({apiKey: process.env.PINECONE_API_KEY});
 
 
@@ -27,8 +28,33 @@ async function queryMemory({queryVector, limit=5, metadata}) {
     return data.matches;
 }
 
+async function deleteAllMemoriesOfChat(chatId) {
+    try {
+        // Uncomment this to debug metadata structure
+        // const testQuery = await lioraIndex.query({
+        //     vector: new Array(768).fill(0),
+        //     topK: 1,
+        //     filter : { chatId: chatId.toString() },
+        //     includeMetadata: true
+        // });
+        // console.log('Debug - Sample vector metadata:', testQuery.matches[0]?.metadata);
+        
+        // Try a simpler filter syntax
+        const res = await lioraIndex.deleteMany({
+            
+            chatId: { $eq: chatId.toString() },
+        
+        });
+        return res;
+    } catch (error) {
+        console.error('Error deleting memories from Pinecone:', error);
+        console.error('ChatId used in filter:', chatId.toString());
+        throw error;
+    }
+}
 
 module.exports = {
     createMemory,
-    queryMemory
+    queryMemory,
+    deleteAllMemoriesOfChat
 }

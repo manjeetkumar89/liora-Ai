@@ -41,7 +41,7 @@ export const ProfileModal = ({
         <div className="space-y-6">
           {/* Profile Picture */}
           <div className="flex flex-col items-center space-y-4">
-            <div className="w-24 h-24 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white text-3xl font-medium">
+            <div className="w-24 h-24 rounded-full bg-radial-[at_50%_75%] from-blue-400 to-blue-800 flex items-center justify-center text-white text-3xl font-medium">
               {(user.fullName.firstName).charAt(0).toUpperCase()}{(user.fullName.lastName).charAt(0).toUpperCase()}
             </div>
             <button
