@@ -13,6 +13,7 @@ export default defineConfig({
         short_name: "Liora",
         description: "AI powered chatBot",
         theme_color: "#212121",
+        background_color : "black",
         icons: [
           {
             "src": "icons/Liora-48x48.png",
