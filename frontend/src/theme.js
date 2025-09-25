@@ -14,7 +14,7 @@ export const theme = {
     border: 'rgba(86, 88, 105, 0.5)',
     success: '#059669',
     error: '#dc2626',
-    warning: '#d97706',
+    warning: 'red',
     shadowLight: '0 2px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.15)',
     shadowMedium: '0 4px 12px rgba(0, 0, 0, 0.15), 0 2px 6px rgba(0, 0, 0, 0.2)',
     shadowHover: '0 8px 24px rgba(0, 0, 0, 0.2), 0 4px 12px rgba(0, 0, 0, 0.25)',

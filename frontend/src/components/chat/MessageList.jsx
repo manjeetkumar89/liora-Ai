@@ -1,5 +1,6 @@
 import React from 'react';
 import { Message } from './Message';
+import { useSelector } from 'react-redux';
 
 export const MessageList = ({
   messages,
@@ -11,8 +12,8 @@ export const MessageList = ({
 }) => {
   return (
     <div
-      className="flex-grow overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
-      style={{ background: currentTheme.background }}
+      className="flex-grow overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] z-9 "
+      //style={{ background: currentTheme.background }}
     >
       {messages.length === 0 ? (
         <WelcomeScreen currentTheme={currentTheme} setInputMessage={setInputMessage} />
@@ -35,13 +36,14 @@ export const MessageList = ({
 };
 
 const WelcomeScreen = ({ currentTheme, setInputMessage }) => {
+  const user = useSelector((state) => state.user.user?.fullName.firstName);
   return (
-    <div className="h-full flex flex-col items-center justify-center p-4 md:p-8">
+    <div className="h-full flex flex-col items-center justify-center p-4 md:p-8 z-9">
       <h2
-        className="text-2xl md:text-3xl font-bold mb-3 text-center"
+        className="text-4xl font-thin md:text-6xl mb-3 text-center"
         style={{ color: currentTheme.text }}
       >
-        Welcome to Liora AI
+        Hello, { user? user : "I am Liora" }
       </h2>
       <p
         className="text-center max-w-md mb-8"
@@ -60,13 +62,17 @@ const WelcomeScreen = ({ currentTheme, setInputMessage }) => {
             <button
               key={suggestion.text}
               onClick={()=> setInputMessage(suggestion.text)}
-              className="px-4 py-2 rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-lg text-sm backdrop-blur-sm animate-fadeIn"
+              className=" px-4 py-2 rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-lg text-sm backdrop-blur-sm animate-fadeIn overflow-hidden"
               style={{
-                background: currentTheme.gradients[suggestion.gradient],
+                //background: currentTheme.gradients[suggestion.gradient],
                 color: '#ffffff',
               }}
             >
               {suggestion.text}
+              <span 
+                className='absolute top-1/2 right-0 transform -translate-y-1/2 translate-x-1/3 w-32 h-16 rounded-full blur-2xl opacity-80 z-0'
+                style={{background: currentTheme.gradients[suggestion.gradient]}}
+              ></span>
             </button>
           ))}
         </div>
@@ -75,12 +81,12 @@ const WelcomeScreen = ({ currentTheme, setInputMessage }) => {
   );
 };
 
-const TypingIndicator = ({ currentTheme }) => {
+const TypingIndicator = () => {
   return (
     <div className="flex justify-start animate-fadeIn">
       <div
-        className="w-8 h-8 rounded-full flex items-center justify-center text-white font-medium mr-3 flex-shrink-0 shadow-lg"
-        style={{ background: currentTheme.gradients.purple }}
+        className="w-8 h-8 rounded-full flex items-center justify-center text-white font-medium mr-3 flex-shrink-0 shadow-lg border"
+        //style={{ background: currentTheme.gradients.purple }}
       >
         AI
       </div>

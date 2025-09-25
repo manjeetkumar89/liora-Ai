@@ -1,18 +1,21 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import Loader from '../Loader';
 
 export const ProfileModal = ({
   isOpen,
   onClose,
   currentTheme,
-  logoutHandler
+  logoutHandler,
+  deleteAccountHandler,
+  loading
 }) => {
-  const user = useSelector((state)=>state.user.user);
+  const user = useSelector((state) => state.user.user);
 
   if (!isOpen) return null;
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-transparent bg-opacity-50 backdrop-blur-sm"
       onClick={onClose}
     >
       <div
@@ -44,12 +47,12 @@ export const ProfileModal = ({
             <div className="w-24 h-24 rounded-full bg-radial-[at_50%_75%] from-blue-400 to-blue-800 flex items-center justify-center text-white text-3xl font-medium">
               {(user.fullName.firstName).charAt(0).toUpperCase()}{(user.fullName.lastName).charAt(0).toUpperCase()}
             </div>
-            <button
+            {/* <button
               className="text-sm font-medium hover:underline"
               style={{ color: currentTheme.primary }}
             >
               Change Photo
-            </button>
+            </button> */}
           </div>
 
           {/* Profile fields */}
@@ -93,7 +96,7 @@ export const ProfileModal = ({
           <div className="flex justify-end space-x-4 mt-8">
             <button
               onClick={logoutHandler}
-              className="px-6 py-3 rounded-xl font-medium transition-all duration-200 hover:opacity-80"
+              className="px-6 py-3 rounded-xl font-medium transition-all duration-200 hover:opacity-80 border border-red-300"
               style={{
                 background: currentTheme.inputBg,
                 color: currentTheme.text
@@ -101,15 +104,16 @@ export const ProfileModal = ({
             >
               logout
             </button>
-            <button
+            {loading ? <Loader /> : <button
               className="px-6 py-3 rounded-xl font-medium transition-all duration-200 hover:shadow-lg"
               style={{
                 background: currentTheme.warning,
                 color: '#ffffff'
               }}
+              onClick={deleteAccountHandler}
             >
               Delete Account
-            </button>
+            </button>}
           </div>
         </div>
       </div>

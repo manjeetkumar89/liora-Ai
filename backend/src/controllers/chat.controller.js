@@ -42,10 +42,8 @@ async function deleteChatController(req, res) {
     const user = req.user;
     const {chatId} = req.params;
     // const session = await mongoose.startSession();
-    console.log(chatId)
     try {
         const pineconeResponse = await deleteAllMemoriesOfChat(chatId);
-        console.log("Pinecone deletion response: ", pineconeResponse);
 
         await messageModel.deleteMany({
             chatId

@@ -1,6 +1,8 @@
 const userModel = require('../models/user.model');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { deleteChatController } = require('./chat.controller');
+const chatModel = require('../models/chat.model');
 
 
 async function registerUserController(req,res) {
@@ -82,8 +84,31 @@ async function logoutUserController(req,res) {
     })
 }
 
+async function deleteAccountController(req, res) {
+
+  const user = req.user; // assuming authenticated user
+
+  try {
+    // 1. Find all chats belonging to this user
+    const chats = await chatModel.find({ user: user._id });
+
+    // 2. Delete each chat (and its messages via your existing chat deletion logic)
+    for (let chat of chats) {
+      await deleteChatController({ params: { chatId: chat._id }, user }, { status: () => ({ json: () => {} }) });
+    }
+
+    // 3. Delete the user itself
+    await userModel.findByIdAndDelete(user._id);
+
+    res.status(200).json({ message: "User and all related chats/messages deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting user", error });
+  }
+};
+
 module.exports = {
     registerUserController,
     loginUserController,
-    logoutUserController
+    logoutUserController,
+    deleteAccountController
 }

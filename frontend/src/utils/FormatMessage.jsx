@@ -2,92 +2,6 @@
 import React from "react";
 import { CodeBlock } from "../components/chat/CodeBlock";
 
-//   const lines = text.split("\n");
-//   const elements = [];
-//   let buffer = [];
-//   let inCodeBlock = false;
-//   let codeLang = "";
-//   let codeBuffer = [];
-
-//   const pushParagraph = () => {
-//     if (buffer.length > 0) {
-//       elements.push(
-//         <p key={elements.length} className="my-2">
-//           {buffer.join(" ")}
-//         </p>
-//       );
-//       buffer = [];
-//     }
-//   };
-
-//   lines.forEach((line, i) => {
-//     // Code block start
-//     if (line.startsWith("```")) {
-//       if (!inCodeBlock) {
-//         inCodeBlock = true;
-//         codeLang = line.replace(/```/, "").trim() || "code";
-//         codeBuffer = [];
-//       } else {
-//         // Code block end
-//         inCodeBlock = false;
-//         elements.push(
-//           <CodeBlock
-//             key={elements.length}
-//             code={codeBuffer.join("\n")}
-//             lang={codeLang}
-//           />
-//         );
-//       }
-//       return;
-//     }
-
-//     if (inCodeBlock) {
-//       codeBuffer.push(line);
-//       return;
-//     }
-
-//     // Bullet list
-//     if (/^\s*[-*]\s+/.test(line)) {
-//       pushParagraph();
-//       const content = line.replace(/^\s*[-*]\s+/, "");
-//       elements.push(
-//         <div
-//           key={elements.length}
-//           className="flex gap-3 items-start my-1"
-//         >
-//           <span className="text-lg leading-none">•</span>
-//           <span className="flex-1">{content}</span>
-//         </div>
-//       );
-//       return;
-//     }
-
-//     // Numbered list
-//     if (/^\s*\d+\.\s+/.test(line)) {
-//       pushParagraph();
-//       const [, num, content] = line.match(/^(\d+)\.\s+(.+)/);
-//       elements.push(
-//         <div
-//           key={elements.length}
-//           className="flex gap-3 items-start my-1"
-//         >
-//           <span className="font-medium min-w-[1.5em]">{num}.</span>
-//           <span className="flex-1">{content}</span>
-//         </div>
-//       );
-//       return;
-//     }
-
-//     // Normal text (collect in buffer)
-//     buffer.push(line);
-//   });
-
-//   pushParagraph(); // flush remaining
-
-//   return elements;
-// };
-
-
 // inline formatting helper
 
 function formatInline(text) {
@@ -133,7 +47,7 @@ function formatInline(text) {
       parts.push(
         <code
           key={key++}
-          className="bg-black/20 px-1.5 py-0.5 rounded-md font-mono text-[13px]"
+          className="bg-black/20 px-1.5 py-0.5 rounded-md font-mono"
         >
           {match[4]}
         </code>

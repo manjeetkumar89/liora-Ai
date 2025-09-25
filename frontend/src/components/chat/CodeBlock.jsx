@@ -10,7 +10,7 @@ export const CodeBlock =({ code, lang })=> {
   };
 
   return (
-    <div className="w-full flex flex-col bg-black/30 rounded-lg text-sm my-3">
+    <div className="w-full flex flex-col bg-black/30 rounded-lg text-sm my-3 overflow-hidden">
       <div className="flex justify-between items-center text-xs opacity-70 px-3 py-2">
         <span>{lang}</span>
         <button

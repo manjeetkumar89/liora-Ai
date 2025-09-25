@@ -17,7 +17,7 @@ const AuthWrapper = (props) => {
         // This will send cookies automatically if { withCredentials: true } is set
         const response = await axiosBaseUrl.post('/api/auth/me', {}, { withCredentials: true });
         const {_id, email, fullName} = response.data.user;
-        console.log("user loaded via calling /me api---->", response.data.user)
+        // console.log("user loaded via calling /me api---->", response.data.user)
         dispatch(loadUser({_id, email, fullName}));
       } catch (error) {
         dispatch(loadUser(null));

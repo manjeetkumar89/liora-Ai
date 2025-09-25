@@ -28,6 +28,7 @@ import {
 import { logoutUser } from '../store/UserSlice';
 import {io} from 'socket.io-client';
 import { nanoid } from '@reduxjs/toolkit';
+import { useNavigate } from 'react-router-dom';
 
 export const Home = () => {
   const dispatch = useDispatch();
@@ -41,8 +42,10 @@ export const Home = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const messagesEndRef = useRef(null);
-
+  const navigate = useNavigate();
   const [socket, setSocket] = useState(null);
+  const [deletingChatId, setdeletingChatId] = useState(null);
+  const [loading, setloading] = useState(false)
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -76,7 +79,6 @@ export const Home = () => {
     });
 
     temp.on("ai-response", (messagePayload) => {
-      console.log("received ai message", messagePayload);
       const aiMessage = {
         _id: nanoid(),
         content: messagePayload.content,
@@ -166,9 +168,9 @@ export const Home = () => {
 
   const handleDeleteChat = async(chatId, e) => {
     e.stopPropagation(); // Prevent chat selection when clicking delete
+    setdeletingChatId(chatId);
     const response = await axiosBaseUrl.delete(`/api/chat/${chatId}`, {withCredentials:true});
     toast.success(response.data.message);
-    console.log(response.data.message);
     dispatch(deleteChat(chatId));
   };
 
@@ -176,7 +178,6 @@ export const Home = () => {
     try {
       const response = await axiosBaseUrl.post('/api/auth/logout', {}, { withCredentials: true });
       toast.success(response.data.message);
-      console.log(response.data.message);
       dispatch(logoutUser());
       dispatch(clearMessages());
     } catch (error) {
@@ -187,10 +188,22 @@ export const Home = () => {
   const fetchChatMessages = async(chatId)=>{
     try {
       const response = await axiosBaseUrl.get(`/api/chat/${chatId}`, {withCredentials:true});
-      console.log(response.data)
       dispatch(setMessages(response.data.messages));
     } catch (error) {
       console.error("Error fetching chat messages:", error);
+    }
+  }
+
+  const deleteAccountHandler = async()=>{
+    try {
+      setloading(true);
+      await axiosBaseUrl.delete('/api/auth/deleteAccount', {withCredentials : true});
+      dispatch(logoutUser());
+      toast.success("Account deleted");
+      setloading(false);
+      navigate('/login');
+    } catch (error) {
+      console.error("error deleting account : ", error)
     }
   }
 
@@ -207,9 +220,11 @@ export const Home = () => {
         setIsProfileOpen={setIsProfileOpen}
         clearMessages={clearMessages}
         fetchChatMessages={fetchChatMessages}
+        deletingChatId={deletingChatId}
       />
 
       <div className="flex-1 flex flex-col relative">
+        {/* <div className='absolute top-0 right-1/2 transform -translate-y-1/3 translate-x-1/2 w-[1000px] h-[800px] bg-radial-[at_50%_50%] from-cyan-400 from-20% via-sky-700 via-35% to-black to-100% rounded-full blur-3xl opacity-90 z-0'></div> */}
         <Header
           currentTheme={currentTheme}
           isSidebarOpen={isSidebarOpen}
@@ -247,6 +262,8 @@ export const Home = () => {
         onClose={() => setIsProfileOpen(false)}
         currentTheme={currentTheme}
         logoutHandler={logoutHandler}
+        deleteAccountHandler={deleteAccountHandler}
+        loading={loading}
       />
 
       <style>

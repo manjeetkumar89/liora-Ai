@@ -8,23 +8,19 @@ export const Message = ({ message, formatMessage, currentTheme }) => {
     <div className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'} animate-messageIn`}>
       {message.role === 'model' && (
         <div
-          className="w-8 h-8 rounded-full flex items-center justify-center text-white font-medium mr-3 flex-shrink-0 shadow-lg animate-pop"
-          style={{ background: currentTheme.gradients.purple }}
+          className="w-8 h-8 rounded-full flex items-center justify-center text-white font-medium mr-3 flex-shrink-0 shadow-lg animate-pop border"
+          //style={{ background: currentTheme.gradients.purple }}
         >
           AI
         </div>
       )}
       <div
-        className={`max-w-[85%] sm:max-w-[80%] py-1 px-5 group rounded-2xl transition-all duration-300  ${message.role==='user' ? 'rounded-tr-sm' : 'rounded-tl-sm' }`}
+        className={`max-w-[85%] sm:max-w-[80%] py-1 px-5 group rounded-4xl transition-all duration-300  ${message.role==='user' ? 'rounded-tr-sm bg-cyan-400/20' : 'rounded-tl-sm bg-gray-500/20 ' }`}
         style={{
-          background: currentTheme.cardBg,
+          //background: currentTheme.cardBg,
           color: currentTheme.text,
         }}
       >
-        {/* <div
-          className="whitespace-pre-wrap prose prose-invert max-w-full prose-pre:my-0 prose-pre:bg-transparent prose-p:my-2 prose-headings:mb-3 prose-headings:mt-6 first:prose-headings:mt-2"
-          dangerouslySetInnerHTML={formatMessage(message.content)}
-        /> */}
         <div className="prose prose-invert max-w-none">
           {formatMessage(message.content)}
         </div>
@@ -58,8 +54,8 @@ export const Message = ({ message, formatMessage, currentTheme }) => {
       </div>
       {message.role === 'user' && (
         <div
-          className="w-8 h-8 rounded-full flex items-center justify-center text-white font-medium ml-3 flex-shrink-0 shadow-lg animate-pop"
-          style={{ background: currentTheme.gradients.blue }}
+          className="w-8 h-8 rounded-full flex items-center justify-center text-cyan-500 font-medium ml-3 flex-shrink-0 shadow-lg animate-pop border border-cyan-500"
+          //style={{ background: currentTheme.gradients.blue }}
         >
           {user?.fullName.firstName.charAt(0).toUpperCase() || "U"}
         </div>

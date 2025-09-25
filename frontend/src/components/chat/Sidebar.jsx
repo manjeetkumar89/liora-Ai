@@ -1,5 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import Loader from '../Loader';
 
 
 export const Sidebar = ({
@@ -12,7 +13,8 @@ export const Sidebar = ({
   handleDeleteChat,
   setIsProfileOpen,
   clearMessages,
-  fetchChatMessages
+  fetchChatMessages,
+  deletingChatId
 }) => {
 
   const user = useSelector((state) => state.user.user);
@@ -57,11 +59,8 @@ export const Sidebar = ({
             </div>
             {/* New Chat Button */}
 
-            <div class="relative flex w-full cursor-pointer items-center overflow-hidden rounded-xl p-[1.5px]">
-              <div class=" animate-rotate absolute inset-0 h-full w-full rounded-full bg-[conic-gradient(#0ea5e9_50deg,#522AF4_120deg)]" ></div>
-              {/* <button class="relative z-10 block w-full rounded-xl bg-gray-800 px-6 py-3 text-white">
-                My Button
-              </button> */}
+            <div className="relative flex w-full cursor-pointer items-center overflow-hidden rounded-2xl p-[1.5px]">
+              <div className=" animate-rotate absolute inset-0 h-full w-full rounded-full bg-[conic-gradient(#0ea5e9_50deg,#522AF4_120deg)]" ></div>
               <button
                 onClick={handleNewChat}
                 className="relative z-10 flex items-center justify-center w-full px-3 py-2 rounded-2xl border"
@@ -97,8 +96,8 @@ export const Sidebar = ({
               >
                 {chat.active ?
                   <>
-                    <span className='absolute top-1/2 right-0 transform -translate-y-1/2 translate-x-1/3 w-32 h-16 bg-blue-800 rounded-full blur-2xl opacity-80 z-0'></span>
-                    <span className="absolute rounded-2xl bg-blue-400 blur-[0.8px] right-0 w-1 h-1/2 opacity-80"></span>
+                    <span className='absolute top-1/2 right-0 transform -translate-y-1/2 translate-x-1/3 w-32 h-16 bg-cyan-600 rounded-full blur-2xl opacity-80 z-0'></span>
+                    <span className="absolute rounded-2xl bg-cyan-300 blur-[0.8px] right-0 w-1 h-1/2 opacity-80"></span>
                   </> : null
                 }
 
@@ -113,7 +112,7 @@ export const Sidebar = ({
                     {chat.lastActivity}
                   </div> */}
                 </div>
-                <button
+                {(deletingChatId === chat._id)? <Loader/> : <button
                   className=" md:opacity-0 group-hover:opacity-100 hover:bg-white/10 p-1 rounded-lg transition-all duration-200 absolute right-2"
                   onClick={(e) => handleDeleteChat(chat._id, e)}
                   title="Delete chat"
@@ -122,7 +121,7 @@ export const Sidebar = ({
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                   </svg>
-                </button>
+                </button>}
               </div>
             ))}
           </div>
@@ -137,7 +136,7 @@ export const Sidebar = ({
               className=" overflow-hidden flex items-center px-3 py-2 rounded-3xl hover:shadow-md transition-all duration-200 bg-gray-400/10 backdrop-blur-md border border-white/10 shadow-xl"
               style={{ color: currentTheme.text }}
             >
-              <span className='absolute top-1/2 right-0 transform -translate-y-1/2 translate-x-1/3 w-32 h-16 bg-blue-800 rounded-full blur-2xl opacity-80 z-0'></span>
+              <span className='absolute top-1/2 right-0 transform -translate-y-1/2 translate-x-1/3 w-32 h-16 bg-cyan-600 rounded-full blur-2xl opacity-80 z-0'></span>
               <div className="w-10 h-10 rounded-full bg-radial-[at_50%_75%] from-blue-400 to-blue-800 flex items-center justify-center text-white font-medium mr-3 ">
                 {(user.fullName.firstName).charAt(0)}{(user.fullName.lastName).charAt(0)}
               </div>

@@ -10,7 +10,6 @@ export const userSlice = createSlice({
     reducers :{
         loadUser : (state, action) =>{
             state.user = action.payload;
-            console.log("user loaded" , state.user);
         },
         logoutUser : (state)=>{
             state.user = null;

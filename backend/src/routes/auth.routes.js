@@ -1,5 +1,5 @@
 const express = require('express');
-const { registerUserController, loginUserController, logoutUserController } = require('../controllers/auth.controller');
+const { registerUserController, loginUserController, logoutUserController, deleteAccountController } = require('../controllers/auth.controller');
 const { authUserMiddleware } = require('../middlewares/auth.middleware');
 const router = express.Router();
 
@@ -16,5 +16,6 @@ router.post('/me', authUserMiddleware, (req,res)=>{
     })
 });
 router.post('/logout', authUserMiddleware, logoutUserController);
+router.delete('/deleteAccount',authUserMiddleware, deleteAccountController)
 
 module.exports = router;

@@ -4,13 +4,13 @@ export const Header = ({
   currentTheme,
   isSidebarOpen,
   setIsSidebarOpen,
-  setIsSystemPromptOpen
+  //setIsSystemPromptOpen
 }) => {
   return (
     <div
-      className="flex items-center px-6 py-4 border-b shadow-sm"
+      className="flex items-center px-6 py-4 border-b shadow-sm z-9 bg-[#1C1D1F]"
       style={{
-        background: currentTheme.cardBg,
+        background: currentTheme.background,
         borderColor: currentTheme.border,
         color: currentTheme.text
       }}
@@ -34,7 +34,7 @@ export const Header = ({
             Active
           </span>
         </div>
-        <button
+        {/* <button
           onClick={() => setIsSystemPromptOpen(true)}
           className="flex items-center px-3 py-1.5 rounded-lg transition-all duration-200 text-sm"
           style={{
@@ -48,7 +48,7 @@ export const Header = ({
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
           </svg>
           System Prompt
-        </button>
+        </button> */}
       </div>
     </div>
   );

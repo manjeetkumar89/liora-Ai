@@ -119,8 +119,6 @@ function initSocketServer(httpServer){
                 }]
             }
         ]
-
-        socket.emit("ai-stop-typing");
         
         const response = await aiService.generateResponse([...longTermMemory, ...shortTermMemory]);
 
@@ -128,6 +126,8 @@ function initSocketServer(httpServer){
             content: response,
             chatId: messagePayload.chatId
         });
+
+        socket.emit("ai-stop-typing");
 
         /*
         //saving ai responses to database

@@ -8,20 +8,20 @@ export const MessageInput = ({
 }) => {
   return (
     <div
-      className={` bottom-0 right-0 static w-full p-4 md:px-10 md:py-4 transition-all duration-500`}
+      className={` bottom-0 right-0 static w-full p-4 md:px-10 md:py-4 transition-all duration-500 `}
       style={{
         // background: "transparent",
         //borderTop: `1px solid ${currentTheme.border}`,
       }}
     >
-      <div className="max-w-2xl mx-auto relative">
-        <form onSubmit={handleSendMessage} className="flex space-x-4 items-end justify-center">
+      <div className="max-w-2xl mx-auto relative ">
+        <form onSubmit={handleSendMessage} className="flex space-x-3 items-end justify-center ">
           <div className="flex-grow relative group">
             <textarea
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}
               rows={1}
-              className=" outline-none w-full px-4 py-3 rounded-xl transition-all duration-300 resize-none pr-12 font-light"
+              className="[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] outline-none w-full px-4 py-3 rounded-2xl transition-all duration-300 resize-none pr-12 font-light"
               style={{
                 background: currentTheme.inputBg,
                 color: currentTheme.text,
@@ -39,7 +39,7 @@ export const MessageInput = ({
           </div>
           <button
             type="submit"
-            className="absolute right-5 bottom-3 p-2 rounded-lg transition-all duration-200 hover:bg-[#202123] flex items-center justify-center"
+            className="absolute right-5 bottom-3 p-2 rounded-xl  transition-all duration-200 hover:bg-[#202123] flex items-center justify-center"
             style={{
               background: inputMessage.trim() ? currentTheme.primary : 'transparent',
               color: inputMessage.trim() ? '#fff' : currentTheme.text,

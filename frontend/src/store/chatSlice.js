@@ -20,7 +20,6 @@ export const chatSlice = createSlice({
   reducers: {
     setMessages: (state, action) => {
       state.messages = action.payload;
-      console.log("messages set to state : ", state.messages)
     },
     addMessage: (state, action) => {
       state.messages.push(action.payload);
@@ -33,7 +32,6 @@ export const chatSlice = createSlice({
     },
     setChats: (state, action) => {
       state.chats = action.payload;
-      console.log(state.chats);
     },
     addChat: (state, action) => {
       state.chats = [action.payload, ...state.chats.map(chat => ({ ...chat, active: false }))];
