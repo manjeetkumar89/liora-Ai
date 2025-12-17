@@ -142,7 +142,7 @@ export const Sidebar = ({
               </div>
               <div className="flex-grow">
                 <div className="font-medium">{user.fullName.firstName} {user.fullName.lastName}</div>
-                <div className="text-sm opacity-50">{user.email}</div>
+                <div className="text-sm opacity-50">{((user.email).slice(0, 15) + (user.email.length > 15 ? '...' : ''))}</div>
               </div>
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />

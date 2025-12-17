@@ -4,7 +4,7 @@ const ai = new GoogleGenAI({});
 
 async function generateResponse(content) {
     const response = await ai.models.generateContent({
-        model: "gemini-2.0-flash",
+        model: "gemini-2.5-flash-lite",
         contents: content,
         config: {
             temperature: 0.7,
@@ -49,3 +49,14 @@ module.exports = {
     generateResponse,
     generateVector
 }
+
+// async function checkModels() {
+//   const ai = new GoogleGenAI({ apiKey: "AIzaSyD9a6EIlxQQ3CQ-bsgyAz9FtzaUHa6SSAI" });
+//   const result = await ai.models.list(); 
+  
+//   console.log("My Available Models:");
+//   for await (const model of result) {
+//     console.log(model.name); 
+//   }
+// }
+// checkModels();
