@@ -50,13 +50,3 @@ module.exports = {
     generateVector
 }
 
-// async function checkModels() {
-//   const ai = new GoogleGenAI({ apiKey: "AIzaSyD9a6EIlxQQ3CQ-bsgyAz9FtzaUHa6SSAI" });
-//   const result = await ai.models.list(); 
-  
-//   console.log("My Available Models:");
-//   for await (const model of result) {
-//     console.log(model.name); 
-//   }
-// }
-// checkModels();
