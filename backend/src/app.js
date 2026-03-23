@@ -7,19 +7,21 @@ const app = express();
 const path = require('path');
 
 app.use(cors({
-    origin:'http://localhost:5173',
+    origin:'https://liora-ai-chi.vercel.app/',
     credentials:true
-})); // Enable CORS for all routes
+})); 
+
+
 app.use(express.json());
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, '../public')));
+//app.use(express.static(path.join(__dirname, '../public')));
 
 
 app.use('/api/auth', authRoutes);
 app.use('/api/chat', chatRoutes);
 
-app.get('*name', (req,res)=>{
-    res.sendFile(path.join(__dirname, '../public/index.html'));
-})
+// app.get('*name', (req,res)=>{
+//     res.sendFile(path.join(__dirname, '../public/index.html'));
+// })
 
 module.exports = app;
