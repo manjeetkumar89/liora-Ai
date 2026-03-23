@@ -7,7 +7,7 @@ const app = express();
 const path = require('path');
 
 app.use(cors({
-    origin:'https://liora-ai-chi.vercel.app/',
+    origin:'https://liora-ai-chi.vercel.app',
     credentials:true
 })); 
 
