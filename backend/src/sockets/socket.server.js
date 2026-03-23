@@ -12,7 +12,8 @@ const {createMemory, queryMemory} = require('../services/vector.service');
 function initSocketServer(httpServer){
     const io = new Server(httpServer,{
         cors : {
-            origin : "http://localhost:5173", //frontend url
+            origin:'https://liora-ai-chi.vercel.app',
+            //origin : "http://localhost:5173", //frontend url
             credentials : true
         }
     });
