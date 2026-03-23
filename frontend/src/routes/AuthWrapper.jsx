@@ -4,7 +4,6 @@ import { Navigate } from 'react-router-dom';
 import axiosBaseUrl from '../api/AxiosConfig'
 import { useDispatch, useSelector } from 'react-redux';
 import { loadUser } from '../store/UserSlice';
-import Loader from '../components/Loader';
 
 
 const AuthWrapper = (props) => {
@@ -30,7 +29,7 @@ const AuthWrapper = (props) => {
     validateToken();
   }, [dispatch]);
 
-  if (loading) return <Loader />; // or a loading spinner
+  if (loading) return null; // or a loading spinner
 
   return user ? props.children : <Navigate to='/login' />;
 };

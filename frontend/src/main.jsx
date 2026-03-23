@@ -5,14 +5,14 @@ import { store } from './store/store.js'
 import App from './App.jsx'
 import {registerSW} from 'virtual:pwa-register'
 import { ToastContainer } from 'react-toastify'
+import HealthCheckWrapper from './components/HealthCheckWrapper.jsx'
 
 registerSW();
 
 createRoot(document.getElementById('root')).render(
 
     <Provider store={store}>
-      <App />
+      <HealthCheckWrapper />
       <ToastContainer />
     </Provider>
-  
 )

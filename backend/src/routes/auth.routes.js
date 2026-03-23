@@ -3,6 +3,10 @@ const { registerUserController, loginUserController, logoutUserController, delet
 const { authUserMiddleware } = require('../middlewares/auth.middleware');
 const router = express.Router();
 
+router.get('/health', (req, res) => {
+    res.status(200).json({ status: 'OK', timestamp: new Date() });
+});
+
 router.post('/register', registerUserController);
 router.post('/login', loginUserController);
 router.post('/me', authUserMiddleware, (req,res)=>{

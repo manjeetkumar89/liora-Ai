@@ -40,13 +40,13 @@ const WelcomeScreen = ({ currentTheme, setInputMessage }) => {
   return (
     <div className="h-full flex flex-col items-center justify-center p-4 md:p-8 z-9">
       <h2
-        className="text-4xl font-thin md:text-6xl mb-3 text-center"
+        className="text-5xl font-thin md:text-6xl mb-3 text-center"
         style={{ color: currentTheme.text }}
       >
         Hello, { user? user : "I am Liora" }
       </h2>
       <p
-        className="text-center max-w-md mb-8"
+        className="text-center max-w-md mb-8 text-sm md:text-ls"
         style={{ color: currentTheme.secondary }}
       >
         Start a conversation with Liora AI. Ask anything from coding questions to creative writing.
